@@ -1,0 +1,13 @@
+# Navigate to the backend directory
+cd c:\pillpulse\backend
+
+# Set up a python virtual environment (Optional but Recommended)
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install requirements
+pip install -r requirements.txt
+
+uvicorn app.main:app --reload
+
+ollama run llama3

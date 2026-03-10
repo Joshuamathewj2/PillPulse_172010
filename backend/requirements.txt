@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+requests
+pydantic
+python-dotenv
+flask
+flask-cors
+tensorflow
+opencv-python
+numpy
+Pillow

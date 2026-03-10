@@ -1,0 +1,94 @@
+{
+  "name": "PillPulse Medication Reminder Cron",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyMinute"
+      },
+      "id": "cronTrigger",
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8000/medicines/today?user_id=1",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "fetchSchedule",
+      "name": "Fetch Schedule",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const now = new Date();\nconst hours = now.getHours().toString().padStart(2,'0');\nconst minutes = now.getMinutes().toString().padStart(2,'0');\nconst currentTime = `${hours}:${minutes}`;\n\nlet reminders = [];\nfor (const item of $input.all()) {\n  const meds = item.json; // array of medicines\n  for (const item of meds) {\n    if (item.scheduled_time === currentTime && !item.taken) {\n      reminders.push({json: { medicine: item.medicine_name, patient: 'Joshua', scheduled_time: item.scheduled_time }});\n    }\n  }\n}\nreturn reminders;"
+      },
+      "id": "timeCheck",
+      "name": "Check Medicine Time",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{message:`Reminder: ${$json.patient}, take your medicine ${$json.medicine} now.`}}];"
+      },
+      "id": "sendReminder",
+      "name": "Send Reminder Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        100,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Schedule": {
+      "main": [
+        [
+          {
+            "node": "Check Medicine Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Medicine Time": {
+      "main": [
+        [
+          {
+            "node": "Send Reminder Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

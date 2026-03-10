@@ -1,0 +1,94 @@
+{
+  "name": "PillPulse Missed Dose Detection",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyMinute"
+      },
+      "id": "cronTrigger",
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8000/adherence/missed?user_id=1",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "fetchMissed",
+      "name": "Fetch Missed Doses",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let alerts = [];\nfor (const item of $input.all()) {\n  const data = item.json;\n  if (data.missed_doses >= 3) {\n    alerts.push({json: { patient: 'Joshua', missed_count: data.missed_doses, details: data.details }});\n  }\n}\nreturn alerts;"
+      },
+      "id": "checkThreshold",
+      "name": "Check Threshold",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json: {message: `⚠ CAREGIVER ALERT: Patient ${$json.patient} has missed ${$json.missed_count} doses. Please check on them.`}}];"
+      },
+      "id": "sendAlert",
+      "name": "Send Caregiver Alert",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        100,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Missed Doses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Missed Doses": {
+      "main": [
+        [
+          {
+            "node": "Check Threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Threshold": {
+      "main": [
+        [
+          {
+            "node": "Send Caregiver Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

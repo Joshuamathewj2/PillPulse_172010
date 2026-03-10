@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+.env
+.idea/
+.vscode/
+venv/
+env/
+__pycache__/
+*.h5
+*.py[cod]
+*$py.class

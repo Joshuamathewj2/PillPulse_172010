@@ -1,0 +1,193 @@
+import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import numpy as np
+import cv2
+
+MEDICINE_SCHEDULES = {
+    "Hairbless": {
+        "dosage": "1 Tablet",
+        "frequency": "Twice Daily (BD)",
+        "timing": ["8:00 AM — After Breakfast", "8:00 PM — After Dinner"],
+        "duration": "30 Days",
+        "instructions": "Take after food. Do not crush or chew.",
+        "food_interaction": "Take with food to reduce stomach upset.",
+        "refill_reminder": "25 days"
+    },
+    "Lobate": {
+        "dosage": "1 Tablet",
+        "frequency": "Once Daily (OD)",
+        "timing": ["10:00 PM — At Bedtime"],
+        "duration": "14 Days",
+        "instructions": "Apply thin layer to affected area. Avoid eyes.",
+        "food_interaction": "No food restrictions.",
+        "refill_reminder": "10 days"
+    }
+}
+
+from model_loader import load_prediction_model
+from preprocessor import preprocess_prescription
+
+app = Flask(__name__)
+# Enable CORS
+CORS(app)
+
+categories = ['Hairbless', 'Lobate']
+
+@app.route('/api/health', methods=['GET'])
+def health():
+    return jsonify({"status": "ok"})
+
+@app.route("/api/predict", methods=["POST"])
+def predict():
+    try:
+        model = load_prediction_model()
+        
+        if "image" not in request.files:
+            return jsonify({"success": False, "error": "No image uploaded"}), 400
+
+        file = request.files["image"]
+        image_bytes = file.read()
+
+        # Decode image
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Adaptive threshold
+        thresh = cv2.adaptiveThreshold(
+            gray, 255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY_INV, 11, 2
+        )
+
+        # Find contours
+        contours, _ = cv2.findContours(
+            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
+
+        # Filter contours by size — only keep word-sized regions
+        MIN_W, MIN_H = 40, 20
+        MAX_W, MAX_H = img.shape[1] * 0.9, img.shape[0] * 0.9
+
+        boxes = []
+        for c in contours:
+            x, y, w, h = cv2.boundingRect(c)
+            if MIN_W <= w <= MAX_W and MIN_H <= h <= MAX_H:
+                boxes.append((x, y, w, h))
+
+        # Sort top-to-bottom, left-to-right (reading order)
+        boxes = sorted(boxes, key=lambda b: (b[1] // 40, b[0]))
+
+        # Cap at 10 segments max
+        boxes = boxes[:10]
+
+        # If no valid boxes found, use full image
+        if len(boxes) == 0:
+            input_size = tuple(model.input_shape[1:3])
+            segment = cv2.resize(gray, input_size)
+            boxes_to_predict = [segment]
+        else:
+            input_size = tuple(model.input_shape[1:3])
+            boxes_to_predict = []
+            for (x, y, w, h) in boxes:
+                crop = gray[y:y+h, x:x+w]
+                resized = cv2.resize(crop, input_size)
+                boxes_to_predict.append(resized)
+
+        CLASS_NAMES = ["Hairbless", "Lobate"]
+
+        # Run predictions and collect best confidence per class
+        best_per_class = {}  # {class_name: best_confidence}
+
+        for segment in boxes_to_predict:
+            normalized = segment.astype("float32") / 255.0
+            # Handle model input shape (with or without channel dim)
+            if len(model.input_shape) == 4:
+                if model.input_shape[-1] == 1:
+                    inp = normalized.reshape(1, input_size[0], input_size[1], 1)
+                else:
+                    inp = np.stack([normalized]*3, axis=-1)
+                    inp = inp.reshape(1, input_size[0], input_size[1], 3)
+            else:
+                inp = normalized.reshape(1, -1)
+
+            preds = model.predict(inp, verbose=0)[0]
+
+            for idx, conf in enumerate(preds):
+                name = CLASS_NAMES[idx]
+                conf_pct = float(conf) * 100
+                # Only keep if confidence > 60%
+                if conf_pct > 60:
+                    if name not in best_per_class or conf_pct > best_per_class[name]:
+                        best_per_class[name] = conf_pct
+
+        # Build final medicines list — one entry per unique medicine
+        medicines = []
+        for name, conf in sorted(
+            best_per_class.items(),
+            key=lambda x: x[1],
+            reverse=True
+        ):
+            schedule = MEDICINE_SCHEDULES.get(name, {})
+            medicines.append({
+                "name": name,
+                "confidence": round(conf, 1),
+                "status": "identified",
+                "dosage": schedule.get("dosage", "As prescribed"),
+                "frequency": schedule.get("frequency", "As prescribed"),
+                "timing": schedule.get("timing", []),
+                "duration": schedule.get("duration", "As prescribed"),
+                "instructions": schedule.get("instructions", ""),
+                "food_interaction": schedule.get("food_interaction", ""),
+                "refill_reminder": schedule.get("refill_reminder", "")
+            })
+
+        # If nothing passed the 60% threshold, return the top prediction
+        if len(medicines) == 0:
+            segment = boxes_to_predict[0]
+            normalized = segment.astype("float32") / 255.0
+            if len(model.input_shape) == 4:
+                if model.input_shape[-1] == 1:
+                    inp = normalized.reshape(1, input_size[0], input_size[1], 1)
+                else:
+                    inp = np.stack([normalized]*3, axis=-1)
+                    inp = inp.reshape(1, input_size[0], input_size[1], 3)
+            else:
+                inp = normalized.reshape(1, -1)
+            preds = model.predict(inp, verbose=0)[0]
+            best_idx = int(np.argmax(preds))
+            name = CLASS_NAMES[best_idx]
+            conf = float(preds[best_idx]) * 100
+            schedule = MEDICINE_SCHEDULES.get(name, {})
+            medicines = [{
+                "name": name,
+                "confidence": round(conf, 1),
+                "status": "identified",
+                "dosage": schedule.get("dosage", "As prescribed"),
+                "frequency": schedule.get("frequency", "As prescribed"),
+                "timing": schedule.get("timing", []),
+                "duration": schedule.get("duration", "As prescribed"),
+                "instructions": schedule.get("instructions", ""),
+                "food_interaction": schedule.get("food_interaction", ""),
+                "refill_reminder": schedule.get("refill_reminder", "")
+            }]
+
+        return jsonify({
+            "success": True,
+            "medicines": medicines,
+            "total_found": len(medicines)
+        })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
+
+if __name__ == '__main__':
+    # Load model on startup
+    load_prediction_model()
+    # Run Flask on port 5000
+    app.run(host='0.0.0.0', port=5000, debug=True)

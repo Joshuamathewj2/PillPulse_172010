@@ -1,0 +1,94 @@
+{
+  "name": "PillPulse Refill Prediction",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyMinute"
+      },
+      "id": "cronTrigger",
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8000/medicines/remaining?user_id=1",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "fetchMedicines",
+      "name": "Fetch Medicines",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let alerts = [];\nfor (const item of $input.all()) {\n  const meds = item.json;\n  for (const m of meds) {\n    if (m.remaining_days < 5) {\n      alerts.push({json: { medicine: m.medicine_name, remaining_days: m.remaining_days, patient: 'Joshua' }});\n    }\n  }\n}\nreturn alerts;"
+      },
+      "id": "checkThreshold",
+      "name": "Check Refill Threshold",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{message:`Refill Alert: ${$json.patient} has only ${$json.remaining_days} days of ${$json.medicine} left.`}}];"
+      },
+      "id": "refillAlert",
+      "name": "Send Refill Alert",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        100,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Medicines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Medicines": {
+      "main": [
+        [
+          {
+            "node": "Check Refill Threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Refill Threshold": {
+      "main": [
+        [
+          {
+            "node": "Send Refill Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
