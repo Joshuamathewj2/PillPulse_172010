@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { requestPermissionAndGetToken } from '../../firebase';
 import { Shield, User, Heart, CheckCircle, Copy, Share2, Loader2, AlertCircle } from 'lucide-react';
 import { getDevMode } from '../../escalationEngine';
+const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
 
 export default function Onboarding({ onComplete }: { onComplete: () => void }) {
     const [step, setStep] = useState<'role' | 'patient-form' | 'patient-success' | 'caregiver-form' | 'caregiver-success'>('role');
@@ -28,7 +29,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
             const code = getDevMode() ? 'TEST-0000' : generateCode(name);
             const token = await requestPermissionAndGetToken() || 'dummy-token';
             
-            await fetch('http://localhost:5000/api/register-patient', {
+            await fetch(`${API_URL}/api/register-patient`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ patientCode: code, name, token })
@@ -61,7 +62,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
         try {
             const token = await requestPermissionAndGetToken() || 'dummy-token';
             
-            const res = await fetch('http://localhost:5000/api/register-caregiver', {
+            const res = await fetch(`${API_URL}/api/register-caregiver`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ patientCode, caregiverName: name, relation, token })

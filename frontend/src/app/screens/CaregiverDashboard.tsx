@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { motion } from 'motion/react';
 import { Shield, Activity, Clock, LogOut, CheckCircle, AlertCircle, RefreshCw, Bell } from 'lucide-react';
 import { toast } from 'sonner';
+const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
 
 interface DoseLog {
     medicineName: string;
@@ -20,7 +22,7 @@ export default function CaregiverDashboard() {
         if (!patientCode) return;
         if (!silent) setIsRefreshing(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/patient-status?patientCode=${patientCode}`);
+            const res = await fetch(`${API_URL}/api/patient-status?patientCode=${patientCode}`);
             const data = await res.json();
             if (data.success) {
                 setPatientName(data.patientName);

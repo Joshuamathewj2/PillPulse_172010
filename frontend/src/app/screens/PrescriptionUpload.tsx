@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { requestPermissionAndGetToken, onForegroundMessage } from '../../firebase';
 import { escalationEngine, setDevMode, getDevMode } from '../../escalationEngine';
+const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
 import CaregiverSetup, { Caregiver } from '../components/CaregiverSetup';
 import DoseHistory from '../components/DoseHistory';
 
@@ -290,7 +291,7 @@ export default function PrescriptionUpload() {
             const formData = new FormData();
             formData.append('image', selectedImage);
 
-            const response = await fetch('http://localhost:5000/api/predict', {
+            const response = await fetch(`${API_URL}/api/predict`, {
                 method: 'POST',
                 body: formData,
             });

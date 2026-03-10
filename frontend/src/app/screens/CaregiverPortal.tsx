@@ -11,6 +11,7 @@ import {
     ArrowRight
 } from 'lucide-react';
 import { requestPermissionAndGetToken } from '../../firebase';
+const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
 
 export default function CaregiverPortal() {
     const [patientCode, setPatientCode] = useState<string | null>(null);
@@ -51,7 +52,7 @@ export default function CaregiverPortal() {
             }
 
             // 2. POST to backend to register this caregiver
-            const res = await fetch('http://localhost:5000/api/register-caregiver', {
+            const res = await fetch(`${API_URL}/api/register-caregiver`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
