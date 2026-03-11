@@ -435,7 +435,7 @@ export default function PrescriptionUpload() {
         } catch (err) {
             console.error(err);
             setNotifState('idle');
-            alert('Failed to set up notifications.');
+            alert(`Failed to set up notifications: ${err instanceof Error ? err.message : String(err)}`);
         }
     };
 
