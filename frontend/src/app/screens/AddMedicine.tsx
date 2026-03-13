@@ -5,6 +5,8 @@ import { Button } from '../components/ui/button';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 
+const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
+
 export default function AddMedicine() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -17,7 +19,7 @@ export default function AddMedicine() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:8000/medicines/add', {
+            const res = await fetch(`${API_URL}/medicines/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

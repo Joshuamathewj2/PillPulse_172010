@@ -19,10 +19,26 @@ export const requestPermissionAndGetToken = async () => {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') return null;
 
-    // Ensure service worker is ready and pass to escalation engine
+    // Ensure service worker is registered and ready
     if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.ready;
-        escalationEngine.setSWRegistration(registration);
+        try {
+            // Check if already registered
+            let registration = await navigator.serviceWorker.getRegistration();
+            if (!registration) {
+                console.log('[Firebase] Registering new service worker...');
+                registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            }
+            
+            // Wait for it to be ready
+            const readyReg = await Promise.race([
+                navigator.serviceWorker.ready,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('SW timeout')), 5000))
+            ]);
+            
+            escalationEngine.setSWRegistration(readyReg);
+        } catch (e) {
+            console.error('[Firebase] Service worker registration failed:', e);
+        }
     }
 
     return await getToken(messaging, {

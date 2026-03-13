@@ -17,6 +17,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
+
+const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
+
 import {
   LineChart,
   Line,
@@ -73,9 +76,9 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const [medsRes, scoreRes, remainingRes] = await Promise.all([
-          fetch('http://localhost:8000/medicines/today?user_id=1'),
-          fetch('http://localhost:8000/adherence/score?user_id=1'),
-          fetch('http://localhost:8000/medicines/remaining?user_id=1')
+          fetch(`${API_URL}/medicines/today?user_id=1`),
+          fetch(`${API_URL}/adherence/score?user_id=1`),
+          fetch(`${API_URL}/medicines/remaining?user_id=1`)
         ]);
         if (medsRes.ok) {
           const m = await medsRes.json();
@@ -98,7 +101,7 @@ export default function Dashboard() {
 
   const handleConfirmDose = async (medicine_id: number, scheduled_time: string) => {
     try {
-      const res = await fetch('http://localhost:8000/medicines/confirm-dose', {
+      const res = await fetch(`${API_URL}/medicines/confirm-dose`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

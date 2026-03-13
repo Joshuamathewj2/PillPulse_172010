@@ -45,9 +45,12 @@ export default function CaregiverDashboard() {
                 
                 setLogs(newLogs);
                 lastLogCount.current = newLogs.length;
+            } else {
+                setPatientName('Patient Not Found');
             }
         } catch (e) {
             console.error('Failed to fetch patient status');
+            setPatientName('Connection Error');
         } finally {
             if (!silent) setIsRefreshing(false);
         }

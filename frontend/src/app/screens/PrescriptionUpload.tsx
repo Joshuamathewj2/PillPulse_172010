@@ -352,7 +352,7 @@ export default function PrescriptionUpload() {
                     duration_days: parseInt(med.duration || '7'),
                     schedule: med.timing?.[0] || '08:00',
                 };
-                await fetch('http://localhost:8000/medicines/add', {
+                await fetch(`${API_URL}/medicines/add`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
