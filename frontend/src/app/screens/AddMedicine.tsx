@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 
-const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
+import { API_URL, getPatientId } from '../../lib/api';
 
 export default function AddMedicine() {
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function AddMedicine() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_id: 1, // hardcoded user for MVP
+                    user_id: getPatientId(),
                     ...formData,
                 }),
             });

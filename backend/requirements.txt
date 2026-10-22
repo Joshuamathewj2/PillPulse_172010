@@ -1,8 +1,17 @@
-flask
-flask-cors
-opencv-python-headless
-numpy
-requests
-python-dotenv
-Pillow
-gunicorn
+fastapi>=0.115
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0
+pydantic>=2.7
+python-multipart>=0.0.9
+python-dotenv>=1.0
+httpx>=0.27
+numpy>=1.26
+opencv-python-headless>=4.9
+rapidfuzz>=3.9
+tzdata>=2024.1
+# Prescription readers / LLM providers (each is optional at runtime; configure via env)
+google-genai>=1.30
+anthropic>=0.70
+pytesseract>=0.3.10
+# Tests
+pytest>=8.0

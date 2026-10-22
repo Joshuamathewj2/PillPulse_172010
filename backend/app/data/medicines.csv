@@ -1,0 +1,335 @@
+brand,generic,strength,form,drug_class,use
+Dolo 650,Paracetamol,650 mg,tablet,analgesic-antipyretic,Fever and mild to moderate pain
+Calpol,Paracetamol,500 mg,tablet,analgesic-antipyretic,Fever and pain
+Crocin,Paracetamol,500 mg,tablet,analgesic-antipyretic,Fever and pain
+Crocin Advance,Paracetamol,500 mg,tablet,analgesic-antipyretic,Fever and pain
+P 650,Paracetamol,650 mg,tablet,analgesic-antipyretic,Fever and pain
+Pacimol,Paracetamol,650 mg,tablet,analgesic-antipyretic,Fever and pain
+Sumo,Nimesulide + Paracetamol,100/325 mg,tablet,nsaid,Pain and fever
+Nise,Nimesulide,100 mg,tablet,nsaid,Pain and inflammation
+Combiflam,Ibuprofen + Paracetamol,400/325 mg,tablet,nsaid,Pain fever and inflammation
+Brufen,Ibuprofen,400 mg,tablet,nsaid,Pain and inflammation
+Ibugesic,Ibuprofen,400 mg,tablet,nsaid,Pain and inflammation
+Voveran,Diclofenac,50 mg,tablet,nsaid,Pain and inflammation
+Voveran SR,Diclofenac,100 mg,tablet,nsaid,Pain and inflammation
+Dynapar,Diclofenac,50 mg,tablet,nsaid,Pain and inflammation
+Zerodol,Aceclofenac,100 mg,tablet,nsaid,Pain and inflammation
+Zerodol P,Aceclofenac + Paracetamol,100/325 mg,tablet,nsaid,Pain and inflammation
+Zerodol SP,Aceclofenac + Paracetamol + Serratiopeptidase,100/325/15 mg,tablet,nsaid,Pain swelling and inflammation
+Hifenac P,Aceclofenac + Paracetamol,100/325 mg,tablet,nsaid,Pain and inflammation
+Ketorol DT,Ketorolac,10 mg,tablet,nsaid,Short term moderate pain
+Meftal Spas,Mefenamic acid + Dicyclomine,250/10 mg,tablet,nsaid,Menstrual cramps and abdominal pain
+Meftal Forte,Mefenamic acid + Paracetamol,500/325 mg,tablet,nsaid,Pain and fever
+Naprosyn,Naproxen,250 mg,tablet,nsaid,Pain and inflammation
+Etoshine,Etoricoxib,90 mg,tablet,nsaid,Arthritis pain
+Nucoxia,Etoricoxib,90 mg,tablet,nsaid,Arthritis pain
+Ultracet,Tramadol + Paracetamol,37.5/325 mg,tablet,opioid-analgesic,Moderate to severe pain
+Tramazac,Tramadol,50 mg,capsule,opioid-analgesic,Moderate to severe pain
+Ecosprin,Aspirin,75 mg,tablet,antiplatelet,Prevention of heart attack and stroke
+Ecosprin 150,Aspirin,150 mg,tablet,antiplatelet,Prevention of heart attack and stroke
+Disprin,Aspirin,350 mg,tablet,nsaid,Pain and fever
+Clopilet,Clopidogrel,75 mg,tablet,antiplatelet,Prevention of clots after heart attack or stent
+Deplatt,Clopidogrel,75 mg,tablet,antiplatelet,Prevention of clots
+Ecosprin AV,Aspirin + Atorvastatin,75/10 mg,capsule,antiplatelet,Heart disease prevention
+Warf,Warfarin,5 mg,tablet,anticoagulant,Prevention of blood clots
+Acitrom,Acenocoumarol,2 mg,tablet,anticoagulant,Prevention of blood clots
+Augmentin,Amoxicillin + Clavulanic acid,625 mg,tablet,penicillin-antibiotic,Bacterial infections
+Augmentin Duo,Amoxicillin + Clavulanic acid,1000 mg,tablet,penicillin-antibiotic,Bacterial infections
+Clavam,Amoxicillin + Clavulanic acid,625 mg,tablet,penicillin-antibiotic,Bacterial infections
+Moxikind CV,Amoxicillin + Clavulanic acid,625 mg,tablet,penicillin-antibiotic,Bacterial infections
+Mox,Amoxicillin,500 mg,capsule,penicillin-antibiotic,Bacterial infections
+Novamox,Amoxicillin,500 mg,capsule,penicillin-antibiotic,Bacterial infections
+Azithral,Azithromycin,500 mg,tablet,macrolide-antibiotic,Bacterial infections
+Azee,Azithromycin,500 mg,tablet,macrolide-antibiotic,Bacterial infections
+Zithrox,Azithromycin,500 mg,tablet,macrolide-antibiotic,Bacterial infections
+Claribid,Clarithromycin,500 mg,tablet,macrolide-antibiotic,Bacterial infections and H. pylori
+Ciplox,Ciprofloxacin,500 mg,tablet,fluoroquinolone-antibiotic,Bacterial infections
+Cifran,Ciprofloxacin,500 mg,tablet,fluoroquinolone-antibiotic,Bacterial infections
+Levoflox,Levofloxacin,500 mg,tablet,fluoroquinolone-antibiotic,Bacterial infections
+Levomac,Levofloxacin,500 mg,tablet,fluoroquinolone-antibiotic,Bacterial infections
+Oflox,Ofloxacin,200 mg,tablet,fluoroquinolone-antibiotic,Bacterial infections
+Zenflox,Ofloxacin,200 mg,tablet,fluoroquinolone-antibiotic,Bacterial infections
+Oflox OZ,Ofloxacin + Ornidazole,200/500 mg,tablet,fluoroquinolone-antibiotic,Diarrhoea and mixed infections
+Norflox,Norfloxacin,400 mg,tablet,fluoroquinolone-antibiotic,Urinary and gut infections
+Norflox TZ,Norfloxacin + Tinidazole,400/600 mg,tablet,fluoroquinolone-antibiotic,Diarrhoea and dysentery
+Taxim O,Cefixime,200 mg,tablet,cephalosporin-antibiotic,Bacterial infections
+Zifi,Cefixime,200 mg,tablet,cephalosporin-antibiotic,Bacterial infections
+Mahacef,Cefixime,200 mg,tablet,cephalosporin-antibiotic,Bacterial infections
+Cefspan,Cefixime,200 mg,capsule,cephalosporin-antibiotic,Bacterial infections
+Ceftum,Cefuroxime,500 mg,tablet,cephalosporin-antibiotic,Bacterial infections
+Cepodem,Cefpodoxime,200 mg,tablet,cephalosporin-antibiotic,Bacterial infections
+Sporidex,Cephalexin,500 mg,capsule,cephalosporin-antibiotic,Skin and soft tissue infections
+Doxy 1,Doxycycline,100 mg,capsule,tetracycline-antibiotic,Bacterial infections and acne
+Doxt SL,Doxycycline,100 mg,tablet,tetracycline-antibiotic,Bacterial infections
+Minoz,Minocycline,50 mg,tablet,tetracycline-antibiotic,Acne
+Metrogyl,Metronidazole,400 mg,tablet,nitroimidazole-antibiotic,Amoebiasis and anaerobic infections
+Flagyl,Metronidazole,400 mg,tablet,nitroimidazole-antibiotic,Amoebiasis and anaerobic infections
+Tiniba,Tinidazole,500 mg,tablet,nitroimidazole-antibiotic,Amoebiasis and giardiasis
+Bactrim DS,Sulfamethoxazole + Trimethoprim,800/160 mg,tablet,sulfonamide-antibiotic,Urinary infections
+Septran DS,Sulfamethoxazole + Trimethoprim,800/160 mg,tablet,sulfonamide-antibiotic,Urinary infections
+Linid,Linezolid,600 mg,tablet,oxazolidinone-antibiotic,Resistant bacterial infections
+Nitrofur,Nitrofurantoin,100 mg,capsule,urinary-antibiotic,Urinary tract infection
+Martifur,Nitrofurantoin,100 mg,capsule,urinary-antibiotic,Urinary tract infection
+Fluconazole,Fluconazole,150 mg,tablet,antifungal,Fungal infections
+Forcan,Fluconazole,150 mg,tablet,antifungal,Fungal infections
+Zocon,Fluconazole,150 mg,tablet,antifungal,Fungal infections
+Itaspor,Itraconazole,100 mg,capsule,antifungal,Fungal infections
+Terbicip,Terbinafine,250 mg,tablet,antifungal,Fungal skin and nail infections
+Acivir,Acyclovir,400 mg,tablet,antiviral,Herpes and chickenpox
+Valcivir,Valacyclovir,500 mg,tablet,antiviral,Herpes and shingles
+Fabiflu,Favipiravir,200 mg,tablet,antiviral,Viral infection
+Tamiflu,Oseltamivir,75 mg,capsule,antiviral,Influenza
+Albendazole,Albendazole,400 mg,tablet,anthelmintic,Worm infestation
+Zentel,Albendazole,400 mg,tablet,anthelmintic,Worm infestation
+Bandy,Albendazole,400 mg,tablet,anthelmintic,Worm infestation
+Ivermectol,Ivermectin,12 mg,tablet,anthelmintic,Parasitic infections and scabies
+Hcqs,Hydroxychloroquine,200 mg,tablet,antimalarial-dmard,Malaria lupus and rheumatoid arthritis
+Lariago,Chloroquine,250 mg,tablet,antimalarial,Malaria
+Pan 40,Pantoprazole,40 mg,tablet,proton-pump-inhibitor,Acidity and ulcers
+Pantocid,Pantoprazole,40 mg,tablet,proton-pump-inhibitor,Acidity and ulcers
+Pan D,Pantoprazole + Domperidone,40/30 mg,capsule,proton-pump-inhibitor,Acidity and reflux
+Pantocid DSR,Pantoprazole + Domperidone,40/30 mg,capsule,proton-pump-inhibitor,Acidity and reflux
+Omez,Omeprazole,20 mg,capsule,proton-pump-inhibitor,Acidity and ulcers
+Omez D,Omeprazole + Domperidone,20/10 mg,capsule,proton-pump-inhibitor,Acidity and reflux
+Rablet,Rabeprazole,20 mg,tablet,proton-pump-inhibitor,Acidity and ulcers
+Razo,Rabeprazole,20 mg,tablet,proton-pump-inhibitor,Acidity and ulcers
+Rabeloc,Rabeprazole,20 mg,tablet,proton-pump-inhibitor,Acidity and ulcers
+Razo D,Rabeprazole + Domperidone,20/30 mg,capsule,proton-pump-inhibitor,Acidity and reflux
+Nexpro,Esomeprazole,40 mg,tablet,proton-pump-inhibitor,Acidity and ulcers
+Lanzol,Lansoprazole,30 mg,capsule,proton-pump-inhibitor,Acidity and ulcers
+Aciloc,Ranitidine,150 mg,tablet,h2-blocker,Acidity
+Rantac,Ranitidine,150 mg,tablet,h2-blocker,Acidity
+Famocid,Famotidine,40 mg,tablet,h2-blocker,Acidity
+Digene,Magnesium hydroxide + Aluminium hydroxide + Simethicone,,tablet,antacid,Acidity and gas
+Gelusil,Aluminium hydroxide + Magnesium hydroxide,,tablet,antacid,Acidity
+Mucaine,Aluminium hydroxide + Magnesium hydroxide + Oxetacaine,,syrup,antacid,Acidity and heartburn
+Eno,Sodium bicarbonate + Citric acid,,sachet,antacid,Acidity
+Sucral,Sucralfate,1 g,tablet,mucosal-protectant,Ulcers
+Domstal,Domperidone,10 mg,tablet,antiemetic,Nausea and vomiting
+Vomikind,Ondansetron,4 mg,tablet,antiemetic,Nausea and vomiting
+Emeset,Ondansetron,4 mg,tablet,antiemetic,Nausea and vomiting
+Ondem,Ondansetron,4 mg,tablet,antiemetic,Nausea and vomiting
+Perinorm,Metoclopramide,10 mg,tablet,antiemetic,Nausea and vomiting
+Cyclopam,Dicyclomine + Paracetamol,20/325 mg,tablet,antispasmodic,Abdominal cramps
+Buscopan,Hyoscine butylbromide,10 mg,tablet,antispasmodic,Abdominal cramps
+Drotin,Drotaverine,80 mg,tablet,antispasmodic,Abdominal cramps
+Loperamide,Loperamide,2 mg,capsule,antidiarrhoeal,Diarrhoea
+Eldoper,Loperamide,2 mg,capsule,antidiarrhoeal,Diarrhoea
+Electral,Oral rehydration salts,,sachet,electrolyte,Dehydration
+Dulcolax,Bisacodyl,5 mg,tablet,laxative,Constipation
+Cremaffin,Liquid paraffin + Milk of magnesia,,syrup,laxative,Constipation
+Duphalac,Lactulose,,syrup,laxative,Constipation
+Isabgol,Psyllium husk,,powder,laxative,Constipation
+Udiliv,Ursodeoxycholic acid,300 mg,tablet,hepatoprotective,Gallstones and liver disease
+Liv 52,Herbal liver formulation,,tablet,hepatoprotective,Liver support
+Sporlac,Lactic acid bacillus,,tablet,probiotic,Diarrhoea and gut health
+Vizylac,Lactic acid bacillus,,capsule,probiotic,Gut health
+Enterogermina,Bacillus clausii,,suspension,probiotic,Diarrhoea
+Cetzine,Cetirizine,10 mg,tablet,antihistamine,Allergy and cold
+Okacet,Cetirizine,10 mg,tablet,antihistamine,Allergy and cold
+Alerid,Cetirizine,10 mg,tablet,antihistamine,Allergy and cold
+Levocet,Levocetirizine,5 mg,tablet,antihistamine,Allergy
+Xyzal,Levocetirizine,5 mg,tablet,antihistamine,Allergy
+Teczine,Levocetirizine,5 mg,tablet,antihistamine,Allergy
+Allegra,Fexofenadine,120 mg,tablet,antihistamine,Allergy and hay fever
+Avil,Pheniramine,25 mg,tablet,antihistamine,Allergy
+Atarax,Hydroxyzine,25 mg,tablet,antihistamine,Itching and anxiety
+Montair LC,Montelukast + Levocetirizine,10/5 mg,tablet,leukotriene-antagonist,Allergic rhinitis and asthma
+Montek LC,Montelukast + Levocetirizine,10/5 mg,tablet,leukotriene-antagonist,Allergic rhinitis and asthma
+Romilast,Montelukast,10 mg,tablet,leukotriene-antagonist,Asthma prevention
+Sinarest,Paracetamol + Phenylephrine + Chlorpheniramine,,tablet,cold-combination,Common cold
+Cheston Cold,Cetirizine + Phenylephrine + Paracetamol,,tablet,cold-combination,Common cold
+Vicks Action 500,Paracetamol + Phenylephrine + Caffeine,,tablet,cold-combination,Common cold
+Ascoril,Terbutaline + Bromhexine + Guaifenesin,,syrup,cough-expectorant,Productive cough
+Benadryl,Diphenhydramine,,syrup,cough-suppressant,Dry cough
+Grilinctus,Dextromethorphan + Chlorpheniramine,,syrup,cough-suppressant,Dry cough
+Alex,Dextromethorphan + Phenylephrine + Chlorpheniramine,,syrup,cough-suppressant,Dry cough
+Mucinac,Acetylcysteine,600 mg,tablet,mucolytic,Thick mucus
+Asthalin,Salbutamol,100 mcg,inhaler,bronchodilator,Asthma relief
+Levolin,Levosalbutamol,50 mcg,inhaler,bronchodilator,Asthma relief
+Duolin,Levosalbutamol + Ipratropium,,inhaler,bronchodilator,Asthma and COPD
+Budecort,Budesonide,200 mcg,inhaler,inhaled-corticosteroid,Asthma prevention
+Foracort,Formoterol + Budesonide,6/200 mcg,inhaler,inhaled-corticosteroid,Asthma and COPD maintenance
+Seroflo,Salmeterol + Fluticasone,25/250 mcg,inhaler,inhaled-corticosteroid,Asthma and COPD maintenance
+Deriphyllin,Etofylline + Theophylline,150 mg,tablet,bronchodilator,Asthma and COPD
+Doxofylline,Doxofylline,400 mg,tablet,bronchodilator,Asthma and COPD
+Wysolone,Prednisolone,10 mg,tablet,corticosteroid,Inflammation and allergy
+Omnacortil,Prednisolone,10 mg,tablet,corticosteroid,Inflammation and allergy
+Medrol,Methylprednisolone,8 mg,tablet,corticosteroid,Inflammation and allergy
+Dexona,Dexamethasone,0.5 mg,tablet,corticosteroid,Inflammation and allergy
+Defcort,Deflazacort,6 mg,tablet,corticosteroid,Inflammation
+Glycomet,Metformin,500 mg,tablet,biguanide-antidiabetic,Type 2 diabetes
+Glycomet GP 1,Metformin + Glimepiride,500/1 mg,tablet,sulfonylurea-antidiabetic,Type 2 diabetes
+Glycomet GP 2,Metformin + Glimepiride,500/2 mg,tablet,sulfonylurea-antidiabetic,Type 2 diabetes
+Gluconorm G1,Metformin + Glimepiride,500/1 mg,tablet,sulfonylurea-antidiabetic,Type 2 diabetes
+Obimet,Metformin,500 mg,tablet,biguanide-antidiabetic,Type 2 diabetes
+Glyciphage,Metformin,500 mg,tablet,biguanide-antidiabetic,Type 2 diabetes
+Amaryl,Glimepiride,1 mg,tablet,sulfonylurea-antidiabetic,Type 2 diabetes
+Glimisave,Glimepiride,2 mg,tablet,sulfonylurea-antidiabetic,Type 2 diabetes
+Diamicron,Gliclazide,80 mg,tablet,sulfonylurea-antidiabetic,Type 2 diabetes
+Janumet,Sitagliptin + Metformin,50/500 mg,tablet,dpp4-antidiabetic,Type 2 diabetes
+Januvia,Sitagliptin,100 mg,tablet,dpp4-antidiabetic,Type 2 diabetes
+Istavel,Sitagliptin,100 mg,tablet,dpp4-antidiabetic,Type 2 diabetes
+Galvus Met,Vildagliptin + Metformin,50/500 mg,tablet,dpp4-antidiabetic,Type 2 diabetes
+Zita Met,Teneligliptin + Metformin,20/500 mg,tablet,dpp4-antidiabetic,Type 2 diabetes
+Tenepride,Teneligliptin,20 mg,tablet,dpp4-antidiabetic,Type 2 diabetes
+Jardiance,Empagliflozin,10 mg,tablet,sglt2-antidiabetic,Type 2 diabetes and heart failure
+Forxiga,Dapagliflozin,10 mg,tablet,sglt2-antidiabetic,Type 2 diabetes and heart failure
+Voglibose,Voglibose,0.3 mg,tablet,alpha-glucosidase-antidiabetic,Type 2 diabetes
+Pioz,Pioglitazone,15 mg,tablet,glitazone-antidiabetic,Type 2 diabetes
+Lantus,Insulin glargine,100 IU/ml,injection,insulin,Diabetes
+Huminsulin,Human insulin,40 IU/ml,injection,insulin,Diabetes
+Mixtard,Human insulin premix,40 IU/ml,injection,insulin,Diabetes
+Novomix,Insulin aspart premix,100 IU/ml,injection,insulin,Diabetes
+Telma 40,Telmisartan,40 mg,tablet,arb-antihypertensive,High blood pressure
+Telma H,Telmisartan + Hydrochlorothiazide,40/12.5 mg,tablet,arb-antihypertensive,High blood pressure
+Telma AM,Telmisartan + Amlodipine,40/5 mg,tablet,arb-antihypertensive,High blood pressure
+Telmikind,Telmisartan,40 mg,tablet,arb-antihypertensive,High blood pressure
+Losar,Losartan,50 mg,tablet,arb-antihypertensive,High blood pressure
+Repace,Losartan,50 mg,tablet,arb-antihypertensive,High blood pressure
+Olmezest,Olmesartan,20 mg,tablet,arb-antihypertensive,High blood pressure
+Amlong,Amlodipine,5 mg,tablet,calcium-channel-blocker,High blood pressure and angina
+Amlokind,Amlodipine,5 mg,tablet,calcium-channel-blocker,High blood pressure
+Stamlo,Amlodipine,5 mg,tablet,calcium-channel-blocker,High blood pressure
+Cilacar,Cilnidipine,10 mg,tablet,calcium-channel-blocker,High blood pressure
+Nifedipine,Nifedipine,10 mg,capsule,calcium-channel-blocker,High blood pressure
+Envas,Enalapril,5 mg,tablet,ace-inhibitor,High blood pressure and heart failure
+Ramistar,Ramipril,5 mg,tablet,ace-inhibitor,High blood pressure and heart protection
+Cardace,Ramipril,5 mg,tablet,ace-inhibitor,High blood pressure and heart protection
+Concor,Bisoprolol,5 mg,tablet,beta-blocker,High blood pressure and heart failure
+Met XL,Metoprolol,50 mg,tablet,beta-blocker,High blood pressure and angina
+Metolar XR,Metoprolol,50 mg,tablet,beta-blocker,High blood pressure and angina
+Betaloc,Metoprolol,50 mg,tablet,beta-blocker,High blood pressure and angina
+Tenormin,Atenolol,50 mg,tablet,beta-blocker,High blood pressure
+Aten,Atenolol,50 mg,tablet,beta-blocker,High blood pressure
+Ciplar,Propranolol,10 mg,tablet,beta-blocker,High blood pressure tremor and migraine
+Nebicard,Nebivolol,5 mg,tablet,beta-blocker,High blood pressure
+Carvil,Carvedilol,6.25 mg,tablet,beta-blocker,Heart failure and high blood pressure
+Lasix,Furosemide,40 mg,tablet,loop-diuretic,Fluid retention and high blood pressure
+Dytor,Torsemide,10 mg,tablet,loop-diuretic,Fluid retention
+Aldactone,Spironolactone,25 mg,tablet,potassium-sparing-diuretic,Fluid retention and heart failure
+Aquazide,Hydrochlorothiazide,12.5 mg,tablet,thiazide-diuretic,High blood pressure
+Sorbitrate,Isosorbide dinitrate,5 mg,tablet,nitrate,Angina
+Nikoran,Nicorandil,5 mg,tablet,nitrate,Angina
+Digoxin,Digoxin,0.25 mg,tablet,cardiac-glycoside,Heart failure and atrial fibrillation
+Atorva,Atorvastatin,10 mg,tablet,statin,High cholesterol
+Atorva 20,Atorvastatin,20 mg,tablet,statin,High cholesterol
+Lipvas,Atorvastatin,10 mg,tablet,statin,High cholesterol
+Storvas,Atorvastatin,10 mg,tablet,statin,High cholesterol
+Rosuvas,Rosuvastatin,10 mg,tablet,statin,High cholesterol
+Rozavel,Rosuvastatin,10 mg,tablet,statin,High cholesterol
+Crestor,Rosuvastatin,10 mg,tablet,statin,High cholesterol
+Fenolip,Fenofibrate,160 mg,tablet,fibrate,High triglycerides
+Thyronorm,Levothyroxine,50 mcg,tablet,thyroid-hormone,Hypothyroidism
+Eltroxin,Levothyroxine,50 mcg,tablet,thyroid-hormone,Hypothyroidism
+Thyrox,Levothyroxine,50 mcg,tablet,thyroid-hormone,Hypothyroidism
+Neomercazole,Carbimazole,5 mg,tablet,antithyroid,Hyperthyroidism
+Shelcal,Calcium carbonate + Vitamin D3,500 mg,tablet,calcium-supplement,Calcium deficiency and bone health
+Calcimax,Calcium + Vitamin D3,,tablet,calcium-supplement,Calcium deficiency
+Ccm,Calcium citrate malate + Vitamin D3,,tablet,calcium-supplement,Calcium deficiency
+Uprise D3,Cholecalciferol,60000 IU,capsule,vitamin-d,Vitamin D deficiency
+Calcirol,Cholecalciferol,60000 IU,sachet,vitamin-d,Vitamin D deficiency
+D Rise,Cholecalciferol,60000 IU,capsule,vitamin-d,Vitamin D deficiency
+Neurobion Forte,Vitamin B complex + B12,,tablet,vitamin-b,Vitamin B deficiency and nerve health
+Becosules,Vitamin B complex + Vitamin C,,capsule,vitamin-b,Vitamin deficiency
+Methylcobal,Methylcobalamin,500 mcg,tablet,vitamin-b,Vitamin B12 deficiency and neuropathy
+Nurokind,Methylcobalamin,1500 mcg,tablet,vitamin-b,Vitamin B12 deficiency
+Limcee,Vitamin C,500 mg,tablet,vitamin-c,Vitamin C deficiency and immunity
+Celin,Vitamin C,500 mg,tablet,vitamin-c,Vitamin C deficiency
+Zincovit,Multivitamin + Zinc,,tablet,multivitamin,Nutritional deficiency
+Supradyn,Multivitamin + Minerals,,tablet,multivitamin,Nutritional deficiency
+Revital H,Multivitamin + Ginseng,,capsule,multivitamin,Energy and nutrition
+Folvite,Folic acid,5 mg,tablet,folic-acid,Folic acid deficiency and pregnancy
+Livogen,Ferrous fumarate + Folic acid,,tablet,iron-supplement,Iron deficiency anaemia
+Fefol,Ferrous sulphate + Folic acid,,capsule,iron-supplement,Iron deficiency anaemia
+Autrin,Ferrous fumarate + Folic acid + B12,,capsule,iron-supplement,Anaemia
+Orofer XT,Ferrous ascorbate + Folic acid,100 mg,tablet,iron-supplement,Iron deficiency anaemia
+Dexorange,Ferric ammonium citrate + B12 + Folic acid,,syrup,iron-supplement,Anaemia
+Evion,Vitamin E,400 mg,capsule,vitamin-e,Vitamin E deficiency
+Zinconia,Zinc sulphate,20 mg,tablet,zinc-supplement,Zinc deficiency and diarrhoea
+Gabapin,Gabapentin,300 mg,capsule,anticonvulsant,Nerve pain and seizures
+Pregabid,Pregabalin,75 mg,capsule,anticonvulsant,Nerve pain
+Lyrica,Pregabalin,75 mg,capsule,anticonvulsant,Nerve pain
+Pregabalin M,Pregabalin + Methylcobalamin,75/750 mg,capsule,anticonvulsant,Nerve pain
+Eptoin,Phenytoin,100 mg,tablet,anticonvulsant,Seizures
+Levipil,Levetiracetam,500 mg,tablet,anticonvulsant,Seizures
+Valparin,Sodium valproate,200 mg,tablet,anticonvulsant,Seizures and bipolar disorder
+Tegretol,Carbamazepine,200 mg,tablet,anticonvulsant,Seizures and trigeminal neuralgia
+Oxetol,Oxcarbazepine,300 mg,tablet,anticonvulsant,Seizures
+Lamitor,Lamotrigine,50 mg,tablet,anticonvulsant,Seizures and bipolar disorder
+Clonotril,Clonazepam,0.5 mg,tablet,benzodiazepine,Anxiety panic and seizures
+Rivotril,Clonazepam,0.5 mg,tablet,benzodiazepine,Anxiety panic and seizures
+Alprax,Alprazolam,0.25 mg,tablet,benzodiazepine,Anxiety
+Restyl,Alprazolam,0.25 mg,tablet,benzodiazepine,Anxiety
+Calmpose,Diazepam,5 mg,tablet,benzodiazepine,Anxiety and muscle spasm
+Ativan,Lorazepam,1 mg,tablet,benzodiazepine,Anxiety
+Zolfresh,Zolpidem,10 mg,tablet,sedative-hypnotic,Insomnia
+Nexito,Escitalopram,10 mg,tablet,ssri-antidepressant,Depression and anxiety
+Cipralex,Escitalopram,10 mg,tablet,ssri-antidepressant,Depression and anxiety
+Fludac,Fluoxetine,20 mg,capsule,ssri-antidepressant,Depression
+Daxid,Sertraline,50 mg,tablet,ssri-antidepressant,Depression and anxiety
+Serta,Sertraline,50 mg,tablet,ssri-antidepressant,Depression and anxiety
+Paxidep,Paroxetine,12.5 mg,tablet,ssri-antidepressant,Depression and anxiety
+Venlor,Venlafaxine,75 mg,tablet,snri-antidepressant,Depression
+Duzela,Duloxetine,20 mg,capsule,snri-antidepressant,Depression and nerve pain
+Tryptomer,Amitriptyline,10 mg,tablet,tricyclic-antidepressant,Depression nerve pain and migraine prevention
+Mirtaz,Mirtazapine,15 mg,tablet,antidepressant,Depression and insomnia
+Oleanz,Olanzapine,5 mg,tablet,antipsychotic,Schizophrenia and bipolar disorder
+Sizodon,Risperidone,2 mg,tablet,antipsychotic,Schizophrenia and bipolar disorder
+Qutipin,Quetiapine,25 mg,tablet,antipsychotic,Schizophrenia bipolar disorder and sleep
+Lithosun,Lithium carbonate,300 mg,tablet,mood-stabilizer,Bipolar disorder
+Syndopa,Levodopa + Carbidopa,100/10 mg,tablet,antiparkinson,Parkinson disease
+Donep,Donepezil,5 mg,tablet,anti-dementia,Alzheimer disease
+Vertin,Betahistine,16 mg,tablet,antivertigo,Vertigo
+Stugeron,Cinnarizine,25 mg,tablet,antivertigo,Vertigo and motion sickness
+Stemetil,Prochlorperazine,5 mg,tablet,antiemetic,Vertigo and nausea
+Sibelium,Flunarizine,10 mg,tablet,calcium-channel-blocker,Migraine prevention and vertigo
+Suminat,Sumatriptan,50 mg,tablet,triptan,Migraine attack
+Naxdom,Naproxen + Domperidone,500/10 mg,tablet,nsaid,Migraine attack
+Myoril,Thiocolchicoside,4 mg,capsule,muscle-relaxant,Muscle spasm
+Myospaz,Chlorzoxazone + Paracetamol,250/325 mg,tablet,muscle-relaxant,Muscle spasm
+Tizan,Tizanidine,2 mg,tablet,muscle-relaxant,Muscle spasm
+Zyloric,Allopurinol,100 mg,tablet,antigout,Gout and high uric acid
+Febuget,Febuxostat,40 mg,tablet,antigout,Gout
+Colchicine,Colchicine,0.5 mg,tablet,antigout,Gout attack
+Folitrax,Methotrexate,7.5 mg,tablet,dmard,Rheumatoid arthritis and psoriasis
+Saaz,Sulfasalazine,500 mg,tablet,dmard,Rheumatoid arthritis and ulcerative colitis
+Urimax,Tamsulosin,0.4 mg,capsule,alpha-blocker,Enlarged prostate
+Veltam,Tamsulosin,0.4 mg,capsule,alpha-blocker,Enlarged prostate
+Silodal,Silodosin,8 mg,capsule,alpha-blocker,Enlarged prostate
+Finast,Finasteride,5 mg,tablet,5-alpha-reductase-inhibitor,Enlarged prostate
+Finax,Finasteride,1 mg,tablet,5-alpha-reductase-inhibitor,Male pattern hair loss
+Cystone,Herbal urinary formulation,,tablet,urinary-alkaliniser,Kidney stones
+Alkasol,Disodium hydrogen citrate,,syrup,urinary-alkaliniser,Burning urination and stones
+Manforce,Sildenafil,50 mg,tablet,pde5-inhibitor,Erectile dysfunction
+Tadacip,Tadalafil,10 mg,tablet,pde5-inhibitor,Erectile dysfunction and enlarged prostate
+Susten,Progesterone,200 mg,capsule,progestin,Pregnancy support
+Duphaston,Dydrogesterone,10 mg,tablet,progestin,Menstrual disorders and pregnancy support
+Primolut N,Norethisterone,5 mg,tablet,progestin,Delaying periods and bleeding disorders
+Ovral L,Levonorgestrel + Ethinyl estradiol,,tablet,oral-contraceptive,Contraception
+Krimson 35,Cyproterone + Ethinyl estradiol,,tablet,oral-contraceptive,PCOS and contraception
+Clomid,Clomiphene,50 mg,tablet,ovulation-inducer,Infertility
+Pause,Tranexamic acid,500 mg,tablet,antifibrinolytic,Heavy bleeding
+Trapic MF,Tranexamic acid + Mefenamic acid,500/250 mg,tablet,antifibrinolytic,Heavy menstrual bleeding
+Ciplactin,Cyproheptadine,4 mg,tablet,antihistamine,Allergy and appetite stimulation
+Isotroin,Isotretinoin,20 mg,capsule,retinoid,Severe acne
+Betnovate,Betamethasone,0.1 %,cream,topical-corticosteroid,Skin inflammation
+Candid,Clotrimazole,1 %,cream,topical-antifungal,Fungal skin infection
+Candid B,Clotrimazole + Beclometasone,,cream,topical-antifungal,Fungal skin infection with inflammation
+Soframycin,Framycetin,,cream,topical-antibiotic,Skin wounds and burns
+T Bact,Mupirocin,2 %,ointment,topical-antibiotic,Skin infections
+Fucidin,Fusidic acid,2 %,cream,topical-antibiotic,Skin infections
+Silverex,Silver sulfadiazine,1 %,cream,topical-antibiotic,Burns
+Permite,Permethrin,5 %,cream,scabicide,Scabies
+Lobate,Clobetasol,0.05 %,cream,topical-corticosteroid,Severe skin inflammation and psoriasis
+Tenovate,Clobetasol,0.05 %,cream,topical-corticosteroid,Severe skin inflammation
+Volini,Diclofenac,,gel,topical-nsaid,Muscle and joint pain
+Moov,Herbal analgesic,,cream,topical-nsaid,Muscle pain
+Ciplox Eye Drops,Ciprofloxacin,0.3 %,eye-drops,ophthalmic-antibiotic,Eye infections
+Moxicip,Moxifloxacin,0.5 %,eye-drops,ophthalmic-antibiotic,Eye infections
+Refresh Tears,Carboxymethylcellulose,0.5 %,eye-drops,lubricant,Dry eyes
+Otrivin,Xylometazoline,0.1 %,nasal-spray,decongestant,Blocked nose
+Nasivion,Oxymetazoline,0.05 %,nasal-spray,decongestant,Blocked nose
+Flomist,Fluticasone,50 mcg,nasal-spray,inhaled-corticosteroid,Allergic rhinitis
+Waxsol,Docusate sodium,,ear-drops,cerumenolytic,Ear wax
+Mintop,Minoxidil,5 %,solution,hair-growth,Hair loss

@@ -1,255 +1,197 @@
 # 💊 PillPulse AI
 
 > **Scan. Verify. Protect.**
-> Transforming handwritten prescriptions into smart medication schedules with zero manual entry.
+> Turn a photo of a handwritten prescription into a verified medication schedule, with reminders that escalate to a caregiver when doses are missed.
 
-![PillPulse](https://img.shields.io/badge/PillPulse-AI%20Healthcare-2E75B6?style=for-the-badge)
-![React](https://img.shields.io/badge/React-Vite-61DAFB?style=for-the-badge&logo=react)
-![Flask](https://img.shields.io/badge/Backend-Flask-000000?style=for-the-badge&logo=flask)
-![Firebase](https://img.shields.io/badge/Notifications-Firebase%20FCM-FFCA28?style=for-the-badge&logo=firebase)
-![Vercel](https://img.shields.io/badge/Hosted-Vercel-000000?style=for-the-badge&logo=vercel)
-
----
-
-## 🌐 Live Demo
+![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?style=for-the-badge&logo=react)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)
+![Firebase](https://img.shields.io/badge/Push-Firebase%20FCM-FFCA28?style=for-the-badge&logo=firebase)
+![Tests](https://img.shields.io/badge/backend%20tests-62%20passing-2ea44f?style=for-the-badge)
 
 | Service | URL |
 |---------|-----|
 | Frontend | [pill-pulse-172010-rhl4.vercel.app](https://pill-pulse-172010-rhl4.vercel.app) |
-| Backend API | Render (Flask) |
+| Backend API | Render (FastAPI), interactive docs at `/docs` |
 
 ---
 
-## 🚀 What is PillPulse?
+## The problem
 
-PillPulse is an AI-powered medication adherence platform built for India's 320 million chronically ill patients. It bridges the gap between prescription OCR systems that stop at text extraction and reminder apps that require manual entry — no existing system connects both endpoints.
+PillPulse targets India's medication non-adherence problem:
 
-**The problem it solves:**
-- Only **15.8%** of hypertensive Indians take medicines correctly
-- **69%** of re-hospitalizations are caused by medication non-adherence
+- Only **15.8%** of hypertensive Indians take their medicines correctly
+- **69%** of re-hospitalisations are linked to medication non-adherence
 - **24%** of handwritten prescriptions are illegible
-- **150 million** clarification calls made annually due to illegible prescriptions
+- **150 million** clarification calls are made every year because of illegible prescriptions
+
+Prescription OCR tools stop at text extraction; reminder apps need everything typed in by hand. PillPulse connects the two: **photo in, safe schedule and reminders out**.
 
 ---
 
-## ✨ Key Features
+## How a prescription becomes a schedule
 
-### 🔬 Core
-- **Prescription OCR** — Upload a handwritten prescription photo, AI extracts medicine names, dosage, frequency and duration
-- **Zero Manual Entry** — BD/TDS/OD/AC/PC/HS shorthand auto-converted to exact clock times
-- **Confidence Scoring** — Every detected medicine shows a confidence score; low confidence fields flagged for patient review
-- **Drug Conflict Auto-Spacing** — Minimum safe inter-dose intervals computed and scheduled automatically
+```mermaid
+flowchart LR
+    A[Prescription photo] --> B[Preprocess<br/>OpenCV]
+    B --> C{Reader chain}
+    C -->|1| G[Gemini vision<br/>JSON schema]
+    C -->|2| CL[Claude vision<br/>JSON schema]
+    C -->|3| T[Tesseract OCR<br/>offline]
+    G & CL & T --> D[Raw lines:<br/>name + sig as written]
+    D --> E[Fuzzy match vs<br/>~330 Indian brands/generics]
+    D --> F[Deterministic sig parser<br/>1-0-1 · BD · HS · x 5 days]
+    E & F --> H[Interaction check +<br/>automatic dose re-spacing]
+    H --> I[Schedule with confidence,<br/>warnings, needs-review flags]
+```
 
-### 🔔 Notifications
-- **FCM Push Notifications** — Real-time browser push notifications on Android Chrome
-- **Service Worker** — Notifications fire even when the browser tab is closed
-- **3-Action Notifications** — ✅ Taken | ⏰ Snooze 15min | ❌ Skip
+The design rule: **models only read; code decides.** Vision models transcribe what is written. Everything that affects safety (dose times, duration, quantities, interaction spacing) is computed by deterministic, unit-tested Python, so the same prescription always yields the same schedule.
 
-### 🚨 Escalation Chain
-- Skip once → Patient reminded again after 15 minutes
-- Skip twice → **Caregiver notified instantly** on their device
-- All events logged to dose history dashboard
-- DEV MODE — escalates in 10 seconds for live demos
+| Stage | What it does | Where |
+|---|---|---|
+| Preprocess | Resizes for vision models; for OCR: CLAHE contrast, deskew, denoise, adaptive threshold | `services/prescription/preprocess.py` |
+| Reader chain | Gemini → Claude → Tesseract, first available wins, falls through on failure. **If none is configured the API returns 503. It never invents medicines.** | `extractors.py` |
+| Drug matching | `rapidfuzz` against a bundled list of ~330 common Indian brands with generic, class and typical use. Misreads like "Azithrall" → Azithral (azithromycin); unknown names are flagged, not dropped. | `drug_db.py`, `data/medicines.csv` |
+| Sig parser | `1-0-1`, `½-0-½`, `1-1-1-1`, `OD/BD/TDS/QID`, `q8h`, `HS`, `SOS`, `STAT`, `AC/PC`, empty stomach, `x 5 days`, `5/7`, `2/52`, `1/12`, "morning", dose units (tab/ml/tsp) → clock times based on the patient's own meal times | `sig_parser.py` |
+| Safety | ~40 timing/interaction rules (antacid/calcium/iron vs. quinolones, tetracyclines, levothyroxine; warfarin + NSAIDs; SSRIs + tramadol; sildenafil + nitrates…). Absorption conflicts are **re-spaced automatically**; serious combinations are flagged for the doctor. | `interactions.py` |
+| Confidence | Combines reader confidence with match score; anything under 75%, unmatched, or with an unclear sig is marked **Please confirm** with the reason | `pipeline.py` |
 
-### 👨‍👩‍👧 Dual User System
-- **Patient** generates a unique code (e.g. `JOSH-4521`)
-- **Caregiver** enters patient code on their own device
-- Two separate devices, two separate notification streams, one linked system
-
-### 📊 Dashboard
-- Dose history with Taken / Missed / Escalated status
-- Weekly adherence percentage bar
-- Refill reminders before medicines run out
-- Caregiver dashboard auto-refreshes every 30 seconds
-
-### 🏥 Additional Features
-- **Symptom Checker** — AI-powered symptom analysis
-- **Hospital Locator** — Nearby government hospitals in Chennai on interactive Leaflet.js map
-- **Healthcare Actions** — Book appointments, order medicine, telehealth services
-- **Animated Splash Screen** — Premium onboarding experience
+Try the parser without an image: `GET /api/parse-sig?text=Tab Dolo 650 1-0-1 x 5 days AC`.
 
 ---
 
-## 🏗️ Tech Stack
+## Features
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React + Vite + Tailwind CSS |
-| Backend | Python Flask + REST API |
-| Notifications | Firebase Cloud Messaging (FCM) |
-| Service Worker | firebase-messaging-sw.js |
-| Automation | n8n workflow engine |
-| Maps | Leaflet.js + OpenStreetMap |
-| Hosting (Frontend) | Vercel |
-| Hosting (Backend) | Render |
-| Version Control | GitHub |
+**Prescription → schedule.** Upload a photo, review each medicine (matched generic, typical use, the original line as written, confidence, warnings), and add everything to your schedule in one tap.
 
----
+**Reminders and escalation.**
+- Browser/FCM notifications with ✅ Taken · ⏰ Snooze · ❌ Skip
+- Repeated skips → caregiver notified on their own device
+- Every event (taken/snoozed/skipped/escalated/missed) is stored server-side; a "Taken" tap counts toward adherence
+- DEV MODE (bottom-right) runs the whole chain in seconds for demos
 
-## 📁 Project Structure
+**Patient ↔ caregiver.** The patient gets a code (e.g. `JOSH-4521`); a caregiver enters it on their phone and sees the live dose log.
 
-```
-PillPulse_172010/
-├── src/
-│   ├── components/
-│   │   ├── PrescriptionUpload.tsx    # OCR upload + schedule generation
-│   │   ├── Dashboard.tsx             # Patient dose history
-│   │   ├── CaregiverDashboard.tsx    # Caregiver monitoring view
-│   │   ├── HospitalMap.tsx           # Leaflet.js hospital locator
-│   │   ├── SplashScreen.tsx          # Animated loading screen
-│   │   └── Onboarding.tsx            # Patient / Caregiver role selection
-│   ├── escalationEngine.js           # Skip → remind → escalate logic
-│   ├── firebase.js                   # FCM token + permission handling
-│   └── App.tsx                       # Main router
-├── public/
-│   └── firebase-messaging-sw.js      # Background notification handler
-├── backend/
-│   ├── app.py                        # Flask API
-│   ├── requirements.txt              # Python dependencies
-│   └── Procfile                      # Render deployment config
-├── n8n/
-│   ├── medication-reminder.json      # Cron-based reminder workflow
-│   ├── refill-prediction.json        # Refill alert workflow
-│   └── dose-status-tracker.json     # Missed dose workflow
-└── README.md
-```
+**Dashboard (real data only).** 7-day adherence %, taken vs. missed per day, today's doses with overdue status, next dose, stock and refill warnings, all computed from the schedule and the adherence log in the patient's timezone.
+
+**Assistant.** Answers "when is my next dose", "did I miss anything", "what is Augmentin for", "how many pills are left" from the patient's actual data. It uses Gemini/Claude/Ollama when configured and a rule-based fallback otherwise. Emergency phrases (chest pain, can't breathe, overdose…) are caught by deterministic rules *before* any model and direct the user to 112.
+
+**Symptom checker** with a safety floor: a model can never downgrade red-flag symptoms.
 
 ---
 
-## ⚙️ Getting Started
+## Architecture
 
-### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- Firebase project with FCM enabled
-
-### 1. Clone the repo
-```bash
-git clone https://github.com/Joshuamathewj2/PillPulse_172010.git
-cd PillPulse_172010
+```mermaid
+flowchart TB
+    subgraph Browser [React + Vite PWA]
+      UP[Prescription upload] --- DB[Dashboard] --- CH[Assistant] --- ESC[Escalation engine + SW]
+    end
+    subgraph API [FastAPI · single service]
+      P[/api/predict/] --> PIPE[Prescription pipeline]
+      PAT[/api/register-*, log-dose,<br/>patient-status, notify-caregiver/]
+      MED[/medicines/*/] & ADH[/adherence/*/]
+      CHAT[/api/chat/]
+    end
+    Browser -->|HTTPS| API
+    API --> SQL[(SQLite / Postgres)]
+    PIPE --> V[Gemini · Claude · Tesseract]
+    CHAT --> L[Gemini · Claude · Ollama]
+    PAT --> FCM[FCM HTTP v1]
 ```
 
-### 2. Install frontend dependencies
-```bash
-npm install
-```
+> v2 note: the original version ran two backends (Flask for prediction/escalation, FastAPI for medicines) behind one URL, so only half the app could work when deployed, and caregiver links lived in memory and vanished on every restart. Everything is now one FastAPI service with persistent storage, and the routes the frontend already used kept their paths.
 
-### 3. Install backend dependencies
+---
+
+## Getting started
+
+### Backend
+
 ```bash
 cd backend
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env        # add at least one reader key (see below)
+uvicorn app.main:app --reload
 ```
 
-### 4. Set up environment variables
+Open http://localhost:8000/docs. `GET /api/health` shows which readers and LLM providers are active.
 
-Create `.env` in the root folder:
-```env
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_MESSAGING_ID=your_messaging_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_FIREBASE_VAPID_KEY=your_vapid_key
-VITE_API_URL=http://localhost:5000
-```
+### Frontend
 
-Create `backend/.env`:
-```env
-FCM_SERVER_KEY=your_fcm_server_key
-PORT=5000
-```
-
-### 5. Run both servers
-
-**Terminal 1 — Frontend:**
 ```bash
+cd frontend
+npm install
+cp .env.example .env        # VITE_API_URL=http://localhost:8000
 npm run dev
 ```
 
-**Terminal 2 — Backend:**
-```bash
-cd backend
-python app.py
-```
+App runs at http://localhost:5173.
 
-App runs at: `http://localhost:5173`
+### Configuration (`backend/.env`)
 
----
-
-## 🔔 How Notifications Work
-
-```
-Patient uploads prescription
-        ↓
-AI extracts medicines → schedule generated
-        ↓
-Patient clicks "Add to Medication Schedule"
-        ↓
-FCM permission requested → token stored
-        ↓
-setTimeout fires at exact medicine time
-        ↓
-Notification: ✅ Taken | ⏰ Snooze | ❌ Skip
-        ↓
-Skip 2× → POST /api/notify-caregiver
-        ↓
-Caregiver's FCM token receives alert instantly
-```
+| Variable | Purpose |
+|---|---|
+| `GEMINI_API_KEY` | Enables Gemini vision reading + chat (`GEMINI_MODEL`, default `gemini-2.5-flash`) |
+| `ANTHROPIC_API_KEY` | Enables Claude vision reading + chat (`ANTHROPIC_MODEL`, default `claude-opus-5-5`) |
+| `TESSERACT_CMD` | Path to a Tesseract binary for offline OCR (auto-detected if on `PATH`) |
+| `PRESCRIPTION_ENGINES` | Reader order, default `gemini,claude,tesseract` |
+| `OLLAMA_URL` / `OLLAMA_MODEL` | Optional local LLM for chat |
+| `DATABASE_URL` | Default `sqlite:///./pillpulse.db`; Postgres URLs work |
+| `APP_TIMEZONE` | Patient wall-clock timezone, default `Asia/Kolkata` |
+| `FIREBASE_SERVICE_ACCOUNT` | Service-account JSON (or path) for FCM HTTP v1 push |
+| `CORS_ORIGINS` | Comma-separated allowed origins, default `*` |
+| `N8N_BASE_URL` | Optional n8n instance for the workflows in `n8n/` |
 
 ---
 
-## 🧪 Demo Mode
-
-Toggle **DEV MODE** (bottom right corner) to run the full escalation chain in **10 seconds** instead of 15 minutes — perfect for live demos and presentations.
-
-```
-DEV MODE ON:
-Skip limit     = 2 (not 3)
-Escalation     = 10 seconds (not 15 minutes)
-```
-
----
-
-## 📡 API Endpoints
+## API
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| POST | `/api/predict` | Upload prescription image → extract medicines |
-| POST | `/api/register-patient` | Register patient with FCM token |
-| POST | `/api/register-caregiver` | Link caregiver to patient code |
-| POST | `/api/notify-caregiver` | Send escalation alert to caregiver |
-| POST | `/api/log-dose` | Log taken / skipped / missed event |
-| GET | `/api/patient-status` | Get patient dose log for caregiver dashboard |
-| POST | `/api/schedule` | Register medication schedule |
-| POST | `/api/send-reminders` | Trigger reminders (called by n8n cron) |
+|---|---|---|
+| GET | `/api/health` | Status + active readers/providers |
+| POST | `/api/predict` | Multipart `image` (+ optional `breakfast`/`lunch`/`dinner`/`bedtime`) → schedule |
+| GET | `/api/engines` | Configured reader chain |
+| GET | `/api/parse-sig?text=` | See how a dosing instruction is interpreted |
+| POST | `/api/register-patient` · `/api/register-caregiver` | Link devices by patient code |
+| POST | `/api/log-dose` | Record taken/snoozed/skipped/escalated/missed |
+| POST | `/api/notify-caregiver` | Push an escalation to every linked caregiver |
+| GET | `/api/patient-status?patientCode=` | Caregiver view of the last 20 events |
+| POST | `/medicines/add` · `/medicines/confirm-dose` | Save a medicine (upserts) · mark a dose taken (idempotent per day) |
+| GET | `/medicines/today` · `/medicines/remaining` · `/medicines/list` | Today's doses · stock · all medicines |
+| GET | `/adherence/score` · `/adherence/weekly` · `/adherence/missed` | Adherence analytics |
+| POST | `/api/chat` | Assistant (`session_id`, `message`, `user_id`) |
+| POST | `/api/symptoms/start` · `/step` · `/analyze` | Symptom triage |
 
 ---
 
-## 🗺️ Roadmap
+## Testing
 
-- [x] Prescription upload + OCR demo
-- [x] Auto schedule generation from shorthand
-- [x] FCM push notifications on Android Chrome
-- [x] Escalation chain — patient → caregiver
-- [x] Dual user system with patient code
-- [x] Dose history dashboard
-- [x] Hospital locator with Leaflet.js
-- [x] Vercel + Render deployment
+```bash
+cd backend && pytest -q          # 62 tests
+cd frontend && npm run build
+```
 
----
+Tests cover the sig parser (40+ real-world notations, including "dates must not parse as 1-0-1"), fuzzy matching of misspelt handwriting, interaction re-spacing, the full prediction pipeline with a stubbed reader, every patient/caregiver route, adherence maths, idempotent dose confirmation, chat red-flag handling and the symptom safety floor. CI runs both on every push.
 
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
+Sample prescription photos for manual testing are in [`docs/sample-prescriptions/`](docs/sample-prescriptions/). The research paper and presentation are in [`docs/`](docs/).
 
 ---
 
-## 🏆 Built At
+## Limitations (honest ones)
 
-This project was built for a Healthcare AI Hackathon, targeting India's medication non-adherence crisis affecting 320 million chronically ill patients.
+- **Not a medical device.** PillPulse helps people remember what their doctor prescribed; every result says to confirm with a doctor or pharmacist.
+- Messy handwriting needs a vision model (Gemini/Claude). Tesseract handles printed or neat prescriptions only.
+- The drug list (~330 entries) and interaction table (~40 rules) cover common Indian prescriptions, not every medicine. Unknown names are flagged rather than guessed.
+- Push notifications need a Firebase service account; without one, in-browser notifications and the caregiver dashboard still work.
+- Patient codes are not authentication. Anyone with a code can view that dose log. Add real auth before handling real patient data.
 
 ---
+
+## License
+
+MIT, see [LICENSE](LICENSE).
 
 <div align="center">
   <strong>💊 PillPulse AI — Scan. Verify. Protect.</strong><br/>
