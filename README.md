@@ -1,4 +1,11 @@
-# 💊 PillPulse AI
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/logo-full-dark.svg">
+    <img src="docs/logo/logo-full.svg" alt="PillPulse" width="520">
+  </picture>
+</p>
+
+# PillPulse AI
 
 > **Scan. Verify. Protect.**
 > Turn a photo of a handwritten prescription into a verified medication schedule, with reminders that escalate to a caregiver when doses are missed.
