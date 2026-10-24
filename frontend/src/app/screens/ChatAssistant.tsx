@@ -17,6 +17,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { getPatientId, postJson } from '../../lib/api';
 
 interface Message {
   id: number;
@@ -35,7 +36,7 @@ export default function ChatAssistant() {
     {
       id: 1,
       type: 'ai',
-      text: "Hello! I'm PillPulse AI, your personal healthcare assistant. I'm here to help you understand your symptoms and guide you to the right care. How can I assist you today?",
+      text: "Hello! I'm PillPulse AI. I can answer questions about your medicines, your schedule, missed doses and refills. For anything urgent, call 112. How can I help?",
     },
   ]);
   const [inputText, setInputText] = useState('');
@@ -50,72 +51,42 @@ export default function ChatAssistant() {
     scrollToBottom();
   }, [messages]);
 
-  const quickSuggestions = [
-    'I have a fever',
-    'Check symptoms',
-    'Find doctor near me',
-    'Medication reminder',
-  ];
+  const [quickSuggestions, setQuickSuggestions] = useState([
+    'When is my next dose?',
+    'Did I miss any doses today?',
+    'What is each medicine for?',
+    'How many pills do I have left?',
+  ]);
+  const sessionId = useRef(`chat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`);
 
-  const handleSendMessage = (text: string) => {
-    if (!text.trim()) return;
+  const handleSendMessage = async (text: string) => {
+    if (!text.trim() || isTyping) return;
 
-    // Add user message
-    const userMessage: Message = {
-      id: messages.length + 1,
-      type: 'user',
-      text,
-    };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [...prev, { id: Date.now(), type: 'user', text }]);
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      let aiResponse: Message;
-
-      // Check for specific keywords
-      if (text.toLowerCase().includes('fever') || text.toLowerCase().includes('headache')) {
-        aiResponse = {
-          id: messages.length + 2,
+    try {
+      const reply = await postJson<{ response: string; suggestions: string[]; emergency: boolean }>('/api/chat', {
+        session_id: sessionId.current,
+        message: text,
+        user_id: getPatientId(),
+      });
+      setMessages((prev) => [...prev, { id: Date.now() + 1, type: 'ai', text: reply.response }]);
+      if (reply.suggestions?.length) setQuickSuggestions(reply.suggestions);
+      if (reply.emergency) navigate('/emergency');
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
           type: 'ai',
-          text: "I understand you're experiencing a headache and fever. Let me help you assess this.",
-          structuredData: {
-            causes: [
-              'Common cold or flu',
-              'Viral infection',
-              'Dehydration',
-              'Stress or tension',
-            ],
-            questions: [
-              'How long have you had these symptoms?',
-              'What is your current temperature?',
-              'Are you experiencing any other symptoms?',
-            ],
-            actions: [
-              'Rest and stay hydrated',
-              'Monitor your temperature',
-              'Take over-the-counter fever reducer if needed',
-              'Consult a doctor if symptoms persist for more than 3 days',
-            ],
-          },
-        };
-      } else if (text.toLowerCase().includes('chest pain') || text.toLowerCase().includes('breathing')) {
-        // Trigger emergency
-        setIsTyping(false);
-        navigate('/emergency');
-        return;
-      } else {
-        aiResponse = {
-          id: messages.length + 2,
-          type: 'ai',
-          text: "I'm here to help! Could you please provide more details about your symptoms? For example:\n\n• What symptoms are you experiencing?\n• When did they start?\n• How severe are they on a scale of 1-10?",
-        };
-      }
-
-      setMessages((prev) => [...prev, aiResponse]);
+          text: "I couldn't reach the PillPulse server. Check your connection and try again. If this is an emergency, call 112 now.",
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (

@@ -1,10 +1,12 @@
 import httpx
 import json
 import logging
+import os
 from sqlalchemy.orm import Session
 from app.models.automation_log import AutomationLog
 
-N8N_BASE_URL = "http://localhost:5678"
+# Optional: point at an n8n instance to run booking / emergency / reminder workflows.
+N8N_BASE_URL = os.getenv("N8N_BASE_URL", "")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,7 +21,9 @@ def log_automation(db: Session, session_id: str, automation_type: str, payload: 
     db.commit()
 
 async def _trigger_webhook(endpoint: str, data: dict, max_retries: int = 1):
-    url = f"{N8N_BASE_URL}{endpoint}"
+    if not N8N_BASE_URL:
+        return False, "n8n not configured (set N8N_BASE_URL)"
+    url = f"{N8N_BASE_URL.rstrip('/')}{endpoint}"
     retries = 0
     while retries <= max_retries:
         try:

@@ -18,39 +18,46 @@ import {
     Users
 } from 'lucide-react';
 import { requestPermissionAndGetToken, onForegroundMessage } from '../../firebase';
-import { escalationEngine, setDevMode, getDevMode } from '../../escalationEngine';
-const API_URL = (import.meta as any).env.VITE_API_URL || 'https://pillpulse-backend.onrender.com';
+import { escalationEngine, getDevMode } from '../../escalationEngine';
+import { API_URL, getPatientId, postJson } from '../../lib/api';
 import CaregiverSetup, { Caregiver } from '../components/CaregiverSetup';
 import DoseHistory from '../components/DoseHistory';
 
+interface InteractionWarning {
+    severity: 'info' | 'caution' | 'serious';
+    message: string;
+    between: string[];
+    adjusted: boolean;
+}
+
 interface ExtractedMedicine {
     name: string;
+    written_as?: string;
+    generic?: string | null;
+    drug_class?: string | null;
+    typical_use?: string | null;
     confidence: number;
     status: string;
+    needs_review?: boolean;
+    review_reasons?: string[];
     dosage?: string;
     frequency?: string;
     duration?: string;
+    duration_days?: number | null;
+    times_per_day?: number;
+    schedule_times?: string[];
     timing?: string[];
     instructions?: string;
     food_interaction?: string;
-    refill_reminder?: string;
+    warnings?: InteractionWarning[];
+    refill_reminder?: string | null;
+    rx_line?: string;
 }
 
-const RX_LINE: Record<string, string> = {
-    "Hairbless": "Tab. Hairbless    1-0-1    PC    × 30 days",
-    "Lobate": "Tab. Lobate       0-0-1    HS    × 14 days"
-};
-
-const SCHEDULE_TABLE = {
-    headers: ["Field", "Lobate", "Hairbless"],
-    rows: [
-        ["Frequency", "Once daily (OD)", "Twice daily (BD)"],
-        ["Timing", "10:00 PM · Bedtime", "8:00 AM · 8:00 PM"],
-        ["Duration", "14 days", "30 days"],
-        ["Instructions", "Apply thin layer", "Take after food"],
-        ["Food Note", "No restrictions", "Take with meals"],
-        ["Refill In", "10 days", "25 days"]
-    ]
+const SEVERITY_STYLE: Record<string, string> = {
+    serious: 'bg-red-50 border-red-200 text-red-800',
+    caution: 'bg-amber-50 border-amber-200 text-amber-800',
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
 };
 
 
@@ -106,6 +113,7 @@ export default function PrescriptionUpload() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [medicines, setMedicines] = useState<ExtractedMedicine[]>([]);
+    const [engine, setEngine] = useState<string | null>(null);
     const [addedMeds, setAddedMeds] = useState<Set<number>>(new Set());
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -275,6 +283,7 @@ export default function PrescriptionUpload() {
         setPreviewUrl(null);
         setError(null);
         setMedicines([]);
+        setEngine(null);
         setAddedMeds(new Set());
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -296,19 +305,20 @@ export default function PrescriptionUpload() {
                 body: formData,
             });
 
+            const data = await response.json().catch(() => ({}));
             if (!response.ok) {
-                throw new Error('Failed to parse prescription');
+                throw new Error(data?.error || 'Failed to read the prescription.');
             }
 
-            const data = await response.json();
             if (data && data.medicines && data.medicines.length > 0) {
                 setMedicines(data.medicines);
+                setEngine(data.engine || null);
             } else {
-                setError('Unable to read prescription clearly. Please upload a clearer image.');
+                setError('No medicines could be read. Try a sharper, well-lit photo of the whole prescription.');
             }
         } catch (err) {
             console.error(err);
-            setError('Unable to read prescription clearly. Please upload a clearer image.');
+            setError(err instanceof Error ? err.message : 'Unable to read the prescription. Please try again.');
         } finally {
             setIsProcessing(false);
         }
@@ -341,24 +351,26 @@ export default function PrescriptionUpload() {
                 return;
             }
 
-            // 2. Try the backend call (best-effort)
-            try {
-                const payload = {
-                    user_id: 1,
-                    medicine_name: med.name,
-                    dosage: med.dosage || '1 per day',
-                    frequency: med.frequency || 'Daily',
-                    times_per_day: med.timing?.length || 1,
-                    duration_days: parseInt(med.duration || '7'),
-                    schedule: med.timing?.[0] || '08:00',
-                };
-                await fetch(`${API_URL}/medicines/add`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                });
-            } catch (_e) {
-                // Backend may be offline — continue with local notifications
+            // 2. Save every medicine to the patient's schedule (drives the dashboard and adherence score)
+            const userId = getPatientId();
+            const saveResults = await Promise.allSettled(
+                medicines
+                    .filter(m => (m.schedule_times?.length || 0) > 0)
+                    .map(m =>
+                        postJson('/medicines/add', {
+                            user_id: userId,
+                            medicine_name: m.name,
+                            generic_name: m.generic || null,
+                            dosage: m.dosage || null,
+                            schedule_times: m.schedule_times,
+                            dosage_per_day: m.times_per_day || m.schedule_times?.length || 1,
+                            duration_days: m.duration_days || null,
+                            instructions: m.instructions || null,
+                        })
+                    )
+            );
+            if (saveResults.some(r => r.status === 'rejected')) {
+                console.warn('Some medicines could not be saved to the server; local reminders still work.');
             }
 
             // 3. Schedule doses via Escalation Engine for ALL medicines
@@ -371,7 +383,8 @@ export default function PrescriptionUpload() {
                 const timings = m.timing || [];
                 for (const t of timings) {
                     const slot = extractTimingSlot(t);
-                    if (slot) allSlots.push(slot);
+                    if (!parseTimeString(slot)) continue; // SOS / "only when needed" has no clock time
+                    allSlots.push(slot);
 
                     // Schedule via escalation engine
                     escalationEngine.scheduleDose(
@@ -615,23 +628,33 @@ export default function PrescriptionUpload() {
                                             <div className="flex items-start justify-between mb-4">
                                                 <div>
                                                     <h4 className="text-xl font-bold text-gray-900">{med.name}</h4>
-                                                    <div className="flex items-center gap-2 mt-1 text-gray-600 text-sm">
-                                                        <CheckCircle className="w-4 h-4" />
-                                                        <span>Status: {med.status.charAt(0).toUpperCase() + med.status.slice(1)}</span>
+                                                    {med.generic && (
+                                                        <p className="text-sm text-gray-500">{med.generic}{med.typical_use ? ` · ${med.typical_use}` : ''}</p>
+                                                    )}
+                                                    <div className={`flex items-center gap-2 mt-1 text-sm ${med.needs_review ? 'text-amber-700' : 'text-gray-600'}`}>
+                                                        {med.needs_review ? <AlertCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                                                        <span>{med.needs_review ? 'Please confirm' : 'Identified'}</span>
                                                     </div>
                                                 </div>
-                                                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                                                    <CheckCircle className="w-5 h-5 text-blue-600" />
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${med.needs_review ? 'bg-amber-50' : 'bg-blue-50'}`}>
+                                                    {med.needs_review ? <AlertCircle className="w-5 h-5 text-amber-600" /> : <CheckCircle className="w-5 h-5 text-blue-600" />}
                                                 </div>
                                             </div>
 
-                                            {RX_LINE[med.name] && (
+                                            {med.rx_line && (
                                                 <div
                                                     className="mb-4 bg-[#F8F9FA] rounded-[6px] px-[14px] py-[8px] w-full text-[#1a1a1a]"
                                                     style={{ fontFamily: 'monospace', fontSize: '13px' }}
+                                                    title="As read from the prescription"
                                                 >
-                                                    {RX_LINE[med.name]}
+                                                    {med.rx_line}
                                                 </div>
+                                            )}
+
+                                            {med.review_reasons && med.review_reasons.length > 0 && (
+                                                <ul className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 space-y-1">
+                                                    {med.review_reasons.map((r, i) => <li key={i}>• {r}</li>)}
+                                                </ul>
                                             )}
 
                                             <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
@@ -680,24 +703,28 @@ export default function PrescriptionUpload() {
                                             )}
 
                                             {med.instructions && (
-                                                <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-100">
-                                                    <div className="flex items-start gap-2 mb-2">
-                                                        <span className="text-lg">⚠️</span>
-                                                        <span className="text-amber-800 text-sm font-medium leading-relaxed">{med.instructions}</span>
-                                                    </div>
-                                                    {med.food_interaction && (
-                                                        <div className="flex items-start gap-2 mt-2 ml-1">
-                                                            <span className="text-sm">🍽️</span>
-                                                            <span className="text-amber-700/80 text-xs leading-relaxed">{med.food_interaction}</span>
+                                                <div className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-start gap-2">
+                                                    <span className="text-lg">🍽️</span>
+                                                    <span className="text-gray-700 text-sm leading-relaxed">{med.instructions}</span>
+                                                </div>
+                                            )}
+
+                                            {med.warnings && med.warnings.length > 0 && (
+                                                <div className="mb-6 space-y-2">
+                                                    {med.warnings.map((w, i) => (
+                                                        <div key={i} className={`p-3 rounded-xl border text-sm ${SEVERITY_STYLE[w.severity] || SEVERITY_STYLE.info}`}>
+                                                            <span className="font-semibold uppercase text-[11px] tracking-wider mr-2">{w.severity}</span>
+                                                            {w.message}
+                                                            {w.adjusted && <span className="block text-xs mt-1 opacity-80">Dose times were adjusted automatically to keep them apart.</span>}
                                                         </div>
-                                                    )}
+                                                    ))}
                                                 </div>
                                             )}
 
                                             {med.refill_reminder && (
                                                 <div className="mb-6 flex items-center gap-2 text-xs text-gray-400">
                                                     <span>🔔</span>
-                                                    <span>Refill reminder set for: {med.refill_reminder} from start</span>
+                                                    <span>Refill reminder: {med.refill_reminder}</span>
                                                 </div>
                                             )}
 
@@ -794,42 +821,43 @@ export default function PrescriptionUpload() {
                             </>
                         )}
 
-                        {!isProcessing && medicines.length === 2 && (
+                        {!isProcessing && medicines.length > 0 && (
                             <motion.div
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.3 }}
                                 className="mt-2 mb-4"
                             >
-                                <h3 className="text-[16px] font-[700] text-gray-900 mb-[12px]">Medication Schedule Summary</h3>
-                                <div className="rounded-[12px] border border-[#E5E7EB] overflow-hidden" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+                                <div className="flex items-center justify-between mb-[12px]">
+                                    <h3 className="text-[16px] font-[700] text-gray-900">Medication Schedule Summary</h3>
+                                    {engine && <span className="text-xs text-gray-400">Read by {engine}</span>}
+                                </div>
+                                <div className="rounded-[12px] border border-[#E5E7EB] overflow-x-auto" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
                                     <table className="w-full text-left border-collapse">
                                         <thead>
                                             <tr className="bg-[#0D1B2A] text-white">
-                                                {SCHEDULE_TABLE.headers.map((h, i) => (
-                                                    <th key={i} className="py-[10px] px-[16px] text-[13px] font-bold">
-                                                        {h}
-                                                    </th>
+                                                {['Medicine', 'Frequency', 'Times', 'Duration'].map(h => (
+                                                    <th key={h} className="py-[10px] px-[16px] text-[13px] font-bold whitespace-nowrap">{h}</th>
                                                 ))}
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {SCHEDULE_TABLE.rows.map((row, i) => (
-                                                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"} style={{ height: '44px' }}>
-                                                    <td className="py-[10px] px-[16px] font-bold text-[#6B7280] text-[12px] uppercase whitespace-nowrap">
-                                                        {row[0]}
+                                            {medicines.map((m, i) => (
+                                                <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB]'} style={{ height: '44px' }}>
+                                                    <td className="py-[10px] px-[16px] font-semibold text-gray-900 text-sm">{m.name}</td>
+                                                    <td className="py-[10px] px-[16px] text-gray-700 text-sm">{m.frequency}</td>
+                                                    <td className="py-[10px] px-[16px] text-gray-700 text-sm">
+                                                        {(m.timing || []).map(t => t.split(' — ')[0]).join(' · ') || '—'}
                                                     </td>
-                                                    <td className="py-[10px] px-[16px] text-gray-900 text-sm">
-                                                        {row[1]}
-                                                    </td>
-                                                    <td className="py-[10px] px-[16px] text-gray-900 text-sm">
-                                                        {row[2]}
-                                                    </td>
+                                                    <td className="py-[10px] px-[16px] text-gray-700 text-sm whitespace-nowrap">{m.duration}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
+                                <p className="mt-3 text-xs text-gray-500">
+                                    PillPulse reads prescriptions to help you remember doses. Always confirm with your doctor or pharmacist.
+                                </p>
                             </motion.div>
                         )}
                     </motion.div>

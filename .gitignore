@@ -10,3 +10,7 @@ __pycache__/
 *.h5
 *.py[cod]
 *$py.class
+.venv/
+*.db
+.pytest_cache/
+firebase-service-account*.json
